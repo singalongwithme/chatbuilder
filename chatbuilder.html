@@ -1,0 +1,127 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Chatbuilder</title>
+    <script src="http://chatbuilder.hackreactor.com/ChatBuilder.js"></script>
+  </head>
+  <body>
+
+    <script>
+      /*
+       *  Nice, you found the HTML source code for ChatBuilder! This document kicks everything off when you load it
+       *  in your browser, and is a starting point for the whole app. It's pretty incomplete though--you should
+       *  make your own version of it that works better!
+       *
+       *  You can't edit the code here until it's in a file on your hard drive, so copy this whole page of source
+       *  code and paste it into a plain text editor like Sublime Text 2 (http://www.sublimetext.com/). Save it as
+       *  a `.html` file, and open that file with Google Chrome. You can now edit it however you like, and refresh
+       *  the page to see your modifications take effect on how the application runs.
+       *
+       *  Fair warning: one or more of the steps ahead could require a good amount of research to understand all
+       *  the terms and technologies mentioned. Googling words you haven't heard before is a great idea. Just be
+       *  careful not to spend too long in 'research mode' without making any forward progress on your real goal of
+       *  completing the app!
+       *
+       *  When you've got this code saved as a local file, uncomment the line of JavaScript code below and open
+       *  the new file in Google Chrome. Your next instructions will be waiting for you in the JavaScript console.
+       *  If you already know the Chrome JS development tools pretty well, feel free to skip this opening tutorial
+       *  by calling the `.start()` function on `Chat.guide` instead of `.intro()`
+       *
+       *  NOTE: Please do not publish or share any of the code associated with this challenge. We've worked really
+       *  hard to build this material and publishing solutions diminishes its effectiveness.
+       */
+      Chat.guide.start();
+
+      Chat.guide(10);
+
+      Chat.display;
+      delete Chat.fetch;
+      delete Chat.send;
+
+      var user = location.search;
+      var apiUrl = 'https://api.parse.com/1/classes/chats';
+
+      var display = function(string) {
+        $('.messages').append($('<li></li>').text(string));
+      };
+
+      var displayAll = function(arrayOfStrings) {
+        for(var i = 0; i < arrayOfStrings.length; i++) {
+          display(arrayOfStrings[i]);
+      }
+    };
+
+      // use this method so that you don't have to write another ajax call out
+      var apiCall = function(action, success, failure){
+        $.ajax({
+          // this might not be accurate attributes, look it up on jquery docs
+          type: action,
+          url: apiUrl,
+          success: success,
+          dataType: 'json',
+          failure: failure
+        })
+      };
+
+      // refact
+      var fetch = function(dataObject) {
+        $.get(apiUrl, function(dataObject) {
+          //var result = "";
+          for (var i in dataObject) {
+            var increment = dataObject[i];
+            for(var j = 0; j < increment.length; j++) {
+                //result += increment[j].text;
+                // this would be your success for the fetch method that you would pass in to apiUrl
+              $('.messages').append($('<li></li>').text(increment[j].text));
+            }
+          }
+        })};
+
+      var send = function(text) {
+        var userName = user.slice(12, user.length);
+        $.ajax({
+          type: "post",
+          url: apiUrl,
+          data: JSON.stringify({
+            "text": userName + ": " + text
+          }),
+          error: function() {
+            alert("error");
+          }
+        });
+        // Find ajax Method that relates to SENDING something (it's not GET)
+        // include all necessary properties on it (i.e. url, type, success function. and failure function)
+          // The success function is where you will be doing something with the data
+          // The failure function is where you will be doing something if the server errors
+      }
+
+      setInterval(function(){
+        $('.messages').html('');
+        $('.messages').append(fetch());},
+        3000);
+
+      $(document).ready(function(){
+        $('.send').click(function(){
+          send($('.draft').val());
+          $('.draft').val('');
+        });
+      });
+
+
+
+      // Your JavaScript code will go right here!
+    </script>
+
+    <h2>Borken Chat</h2>
+
+    <input class="draft" type="text" /> <button class="send">Send</button>
+
+    <ul class="messages">
+      <!-- once you save this code to a local `.html` file, you can delete these 3 fake, hard-coded li elements -->
+
+    </ul>
+
+  </body>
+</html>
