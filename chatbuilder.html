@@ -47,11 +47,11 @@
         $('.messages').append($('<li></li>').text(string));
       };
 
-      var displayAll = function(arrayOfStrings) {
+      /*var displayAll = function(arrayOfStrings) {
         for(var i = 0; i < arrayOfStrings.length; i++) {
           display(arrayOfStrings[i]);
       }
-    };
+    };*/
 
       // use this method so that you don't have to write another ajax call out
       var apiCall = function(action, success, failure){
@@ -97,9 +97,12 @@
           // The failure function is where you will be doing something if the server errors
       }
 
+      fetch();
+
       setInterval(function(){
-        $('.messages').html('');
-        $('.messages').append(fetch());},
+        $('.messages').find('li:first').remove();
+        //$('.messages').find('li:first').appendTo(fetch('li:first'));
+        },
         3000);
 
       $(document).ready(function(){
